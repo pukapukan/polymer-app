@@ -1,0 +1,40 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/core-signals/core-signals.html">
+<link rel="import" href="../../bower_components/firebase-element/firebase-login.html">
+<link rel="import" href="my-globals.html">
+
+<polymer-element name="my-auth">
+  <template>
+    <my-globals id="globals"></my-globals>
+    <firebase-login id="fbLogin" location={{location}} user={{user}}></firebase-login>
+    <template if={{!user}}>
+      <span on-click={{loginClicked}}>Login</span>
+    </template>
+    <template if={{user}}>
+      {{user.facebook.displayName}}
+    </template>
+  </template>
+  <script>
+    (function() {
+      Polymer({
+        stringify: JSON.stringify,
+        loginClicked: function() {
+          this.$.fbLogin.ref.authWithOAuthPopup("facebook", function(err, authData) {
+            if(err) {
+              console.log(err);
+            } else {
+              this.user = authData;
+            }
+          });
+        },
+        ready: function() {
+          this.location = this.$.globals.firebaseUrl;
+          this.$.globals.user(this.user);
+        }
+      });
+    })();
+  </script>
+</polymer-element>
+
+
+https://www.facebook.com/dialog/oauth?display=popup&response_type=code&redirect_uri=https%3A%2F%2Fauth.firebase.com%2Fv2%2Fglowing-fire-8073%2Fauth%2Ffacebook%2Fcallback&state=%7B%22firebase%22%3A%22glowing-fire-8073%22%2C%22transport%22%3A%22popup%22%7D&client_id=295363497318908

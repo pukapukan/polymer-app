@@ -1,0 +1,24 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<polymer-element name="my-globals">
+  <script>
+  (function() {
+    var firebaseUrl = 'https://glowing-fire-8073.firebaseio.com/';
+
+    var _user = null;
+    var user = function (newUser) {
+      if(newUser) {
+        _user = newUser;
+      }
+      return _user;
+    }
+
+    Polymer({
+      ready: function() {
+        this.firebaseUrl = firebaseUrl;
+        this.user = user;
+      }
+    });
+  })();
+  </script>
+</polymer-element>

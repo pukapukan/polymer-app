@@ -1,0 +1,48 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/core-signals/core-signals.html">
+<link rel="import" href="../../bower_components/core-scaffold/core-scaffold.html">
+<link rel="import" href="../../bower_components/core-toolbar/core-toolbar.html">
+<link rel="import" href="../../bower_components/core-menu/core-menu.html">
+<link rel="import" href="../../bower_components/core-item/core-item.html">
+<link rel="import" href="my-auth.html">
+
+<polymer-element name="my-layout" attributes="page">
+  <template>
+    <core-scaffold>
+      <core-header-panel navigation flex>
+        <core-toolbar id="navheader">
+          <span>Polymer 게시판</span>
+        </core-toolbar>
+        <core-menu selected="{{selected}}">
+          <template repeat="{{menuItem in menu}}">
+            <core-item label="{{menuItem}}"></core-item>
+          </template>
+        </core-menu>
+      </core-header-panel>
+      <div tool style="width:100%;">
+        <span>{{board}}</span>
+        <my-auth style="float:right;"></my-auth>
+      </div>
+      <div class="content">
+        <content></content>
+      </div>
+    </core-scaffold>
+  </template>
+  <script>
+  (function () {
+    'use strict';
+    var menu = ['News', 'Discussions', 'Questions'];
+    Polymer({
+      menu: menu,
+      selected: -1,
+      selectedChanged: function(oldValue, newValue) {
+        this.board = menu[newValue];
+        this.fire('core-signal', { name: 'changed-board', data: this.board.toLowerCase() });
+      },
+      ready: function () {
+        this.selected = 0;
+      }
+    });
+  })();
+  </script>
+</polymer-element>

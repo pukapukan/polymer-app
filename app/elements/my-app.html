@@ -1,0 +1,25 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="my-globals.html">
+<link rel="import" href="my-layout.html">
+<link rel="import" href="my-firebase-board.html">
+
+<polymer-element name="my-app" attributes="page">
+  <template>
+    <my-globals id="globals"></my-globals>
+    <firebase-login user="{{user}}" location="{{location}}"></firebase-login>
+    <my-layout>
+      <my-firebase-board></my-firebase-board>
+    </my-layout>
+  </template>
+  <script>
+  (function () {
+    'use strict';
+    Polymer({
+      user: null,
+      ready: function () {
+        this.location = this.$.globals.firebaseUrl;
+      }
+    });
+  })();
+  </script>
+</polymer-element>

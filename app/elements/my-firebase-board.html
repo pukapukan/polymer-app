@@ -1,0 +1,33 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/core-signals/core-signals.html">
+<link rel="import" href="../../bower_components/firebase-element/firebase-element.html">
+<link rel="import" href="my-globals.html">
+
+<polymer-element name="my-firebase-board" attributes="{{board}}">
+  <template>
+    <my-globals id="globals"></my-globals>
+    <firebase-element id="base" location="{{location}}" childEvents="true" ref="{{fireRef}}" data="{{data}}" keys="{{keys}}"></firebase-element>
+    <core-signals on-core-signal-changed-board="{{boardChanged}}"></core-signals>
+
+    <template repeat="{{dailyNews in data}}">
+      <h2>{{dailyNews.Date}}</h2>
+      <template repeat="{{newsItem in dailyNews.Items}}">
+        <h5>{{newsItem.Title}}</h5>
+        <p>{{newsItem.Content}}</p>
+        <template repeat="{{comment in newsItem.Comments}}">
+          <p>{{comment.Author}}: {{comment.Content}}</p>
+        </template>
+      </template>
+    </template>
+  </template>
+  <script>
+  (function () {
+    'use strict';
+    Polymer({
+      boardChanged: function (e, detail, sender) {
+        this.location = this.$.globals.firebaseUrl + detail;
+      }
+    });
+  })();
+  </script>
+</polymer-element>
