@@ -113,9 +113,9 @@ module.exports = function (grunt) {
     },
     connect: {
       options: {
-        port: process.env.PORT,
+        port: process.env.PORT || 9000,
         // change this to '0.0.0.0' to access the server from outside
-        hostname: process.env.IP
+        hostname: process.env.IP || 'localhost'
       },
       livereload: {
         options: {
@@ -289,7 +289,8 @@ module.exports = function (grunt) {
       'sass:server',
       'copy:styles',
       'autoprefixer:server',
-      // 'connect:livereload',
+      'connect:livereload',
+      'open',
       'watch'
     ]);
   });

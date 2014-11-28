@@ -19,14 +19,28 @@
           </template>
         </core-menu>
       </core-header-panel>
-      <div tool style="width:100%;">
+      <div tool class="full-width">
         <span>{{board}}</span>
-        <my-auth style="float:right;"></my-auth>
+        <my-auth class="pull-right"></my-auth>
       </div>
       <div class="content">
         <content></content>
       </div>
     </core-scaffold>
+    <style>
+    :host {
+      display: block;
+    }
+    .content {
+      margin: 20px;
+    }
+    .full-width {
+      width: 100%;
+    }
+    .pull-right {
+      float: right;
+    }
+    </style>
   </template>
   <script>
   (function () {

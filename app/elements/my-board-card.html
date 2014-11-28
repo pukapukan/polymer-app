@@ -1,0 +1,45 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<polymer-element name="my-board-card" attributes="card date" noscript>
+  <template>
+    <div class="card-header">
+      {{card.Title}}
+    </div>
+    <div class="card-author">
+      <!-- <span class="fa-stack fa-1x">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-user fa-stack-1x fa-inverse"></i>
+      </span> -->
+      <i class="fa fa-user"></i>
+      <span class="author-name">&nbsp; {{card.Author}}</span>
+    </div>
+    <div class="date-created">
+      <i class="fa fa-calendar-o"></i>&nbsp; {{date}}
+    </div>
+    <p>{{card.Content}}</p>
+    <template repeat="{{comment in card.Comments}}">
+      <my-comment comment="{{comment}}"></my-comment>
+    </template>
+
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    <style>
+    :host {
+      display: block;
+      position: relative;
+      background-color: white;
+      padding: 20px;
+      margin-bottom: 30px;
+      font-size: 1.2rem;
+      font-weight: 300;
+    }
+    .card-header {
+      margin-bottom: 10px;
+      font-size: 2rem;
+    }
+    .card-author, .date-created {
+      font-size: 0.8em;
+      margin-bottom: 5px;
+    }
+    </style>
+  </template>
+</polymer-element>

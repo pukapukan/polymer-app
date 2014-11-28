@@ -2,6 +2,7 @@
 <link rel="import" href="../../bower_components/core-signals/core-signals.html">
 <link rel="import" href="../../bower_components/firebase-element/firebase-element.html">
 <link rel="import" href="my-globals.html">
+<link rel="import" href="my-board-card.html">
 <link rel="import" href="my-comment.html">
 
 <polymer-element name="my-firebase-board" attributes="{{board}}">
@@ -10,25 +11,28 @@
     <firebase-element id="base" location="{{location}}" childEvents="true" ref="{{fireRef}}" data="{{data}}" keys="{{keys}}"></firebase-element>
     <core-signals on-core-signal-changed-board="{{boardChanged}}"></core-signals>
 
-    <template repeat="{{dailyNews in data}}">
-      <div class="date-header">{{dailyNews.Date}}</div>
-      <template repeat="{{newsItem in dailyNews.Items}}">
-        <h5>{{newsItem.Title}}</h5>
-        <p>{{newsItem.Content}}</p>
-        <template repeat="{{comment in newsItem.Comments}}">
-          <my-comment comment="{{comment}}"></my-comment>
-        </template>
+    <template if={{!data}}>
+      <div class="center">
+        <i class="fa fa-circle-o-notch fa-spin fa-5x"></i>
+      </div>
+    </template>
+
+    <template repeat="{{dailyItems in data}}">
+      <template repeat="{{boardItem in dailyItems.Items}}">
+        <my-board-card card="{{boardItem}}" date="{{dailyItems.Date}}"></my-board-card>
       </template>
     </template>
+
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
     <style>
-      :host {
-        display: block;
-        padding: 10px;
-        position: relative;
-      }
-      .date-header {
-        color: grey;
-      }
+    :host {
+      display: block;
+    }
+    .center {
+      margin-top: 10rem;
+      text-align: center;
+      display: block;
+    }
     </style>
   </template>
   <script>
@@ -37,8 +41,7 @@
     Polymer({
       boardChanged: function (e, detail, sender) {
         this.location = this.$.globals.firebaseUrl + detail;
-      },
-      stringify: JSON.stringify
+      }
     });
   })();
   </script>
