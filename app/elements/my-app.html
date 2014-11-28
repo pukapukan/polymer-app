@@ -16,6 +16,10 @@
     'use strict';
     Polymer({
       user: null,
+      userChanged: function() {
+        this.$.globals.user(this.user);
+        console.log('user changed', this.user);
+      },
       ready: function () {
         this.location = this.$.globals.firebaseUrl;
       }
