@@ -1,31 +1,78 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/core-input/core-input.html">
 <link rel="import" href="../../bower_components/core-signals/core-signals.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../../bower_components/firebase-element/firebase-login.html">
 <link rel="import" href="my-globals.html">
+<link rel="import" href="my-font-awesome.html">
 
 <polymer-element name="my-auth">
   <template>
     <my-globals id="globals"></my-globals>
-    <firebase-login id="fbLogin" location={{location}} user={{user}}></firebase-login>
-    <template if={{!user}}>
-      <span on-click={{loginClicked}}>Login</span>
+    <firebase-login id="fbLogin" location="{{location}}" user="{{user}}" on-login="{{onLogin}}" on-logout="{{onLogout}}"></firebase-login>
+    <template if="{{!user}}">
+      <paper-button on-click="{{openDialog}}" id="loginButton">
+        Login
+      </paper-button>
     </template>
     <template if={{user}}>
-      {{user.facebook.displayName}}
+      <span>{{user | getUsername}}</span>
+      <paper-button on-click={{logoutClicked}}>Logout</paper-button>
     </template>
+
+    <paper-dialog heading="Login" transition="core-transition-center" id="loginDialog">
+      <paper-button raised on-click="{{firebaseLogin}}" login-type="facebook">
+        <my-font-awesome attr="fa-facebook-square fa-lg"></my-font-awesome>&nbsp;
+        Facebook
+      </paper-button>
+      <paper-button raised on-click="{{firebaseLogin}}" login-type="github">
+        <my-font-awesome attr="fa-github-square fa-lg"></my-font-awesome>&nbsp;
+        Github
+      </paper-button>
+    </paper-dialog>
+
+    <style>
+    paper-button {
+      background: rgb(93, 150, 186);
+    }
+    </style>
   </template>
   <script>
     (function() {
+      'use strict';
       Polymer({
         stringify: JSON.stringify,
-        loginClicked: function() {
-          this.$.fbLogin.ref.authWithOAuthPopup("facebook", function(err, authData) {
+        openDialog: function(e) {
+          this.$.loginDialog.open();
+        },
+        firebaseLogin: function(e, detail) {
+          var self = this;
+          var loginType = e.target.getAttribute('login-type');
+          var dialog = this.$.loginDialog;
+          this.$.fbLogin.ref.authWithOAuthPopup(loginType, function(err, authData) {
             if(err) {
               console.log(err);
-            } else {
-              this.user = authData;
+            }
+            if(dialog) {
+              dialog.close();
             }
           });
+        },
+        getUsername: function(user) {
+          var provider = user.provider;
+          return user[provider].displayName;
+        },
+        logoutClicked: function() {
+          this.$.fbLogin.ref.unauth();
+          this.fire('core-signal', { name: 'user-changed', data: this.user });
+        },
+        onLogin: function() {
+          this.$.globals.user(this.user);
+          this.fire('core-signal', { name: 'user-changed', data: this.user });
+        },
+        onLogout: function() {
+          this.$.globals.user(null);
         },
         ready: function() {
           this.location = this.$.globals.firebaseUrl;

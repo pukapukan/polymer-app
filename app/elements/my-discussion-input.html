@@ -1,0 +1,72 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/core-signals/core-signals.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="my-globals.html">
+
+<polymer-element name="my-discussion-input">
+  <template>
+    <core-signals on-core-signal-user-changed="{{signalUserChanged}}"></core-signals>
+    <my-globals id="globals"></my-globals>
+    <template if={{!user}}>
+      <div>
+        Login is required to leave comments
+      </div>
+    </template>
+    <template if={{user}}>
+      <div horizontal layout end>
+        <div start  class="profile">
+          <img src="{{profileUrl}}">
+        </div>
+        <div flex>
+          <paper-input class="full-width font-2x" type="text"></paper-input>
+        </div>
+        <div class="submit">
+          <paper-button class="font-2x">Post</paper-button>
+        </div>
+      </div>
+    </template>
+    <style>
+    .profile {
+      margin: 15px;
+    }
+    .profile > img {
+      height: 75px;
+      width: 75px;
+    }
+    .full-width {
+      width:100%;
+    }
+    .font-2x {
+      font-size: 2rem;
+    }
+    .submit {
+      margin-bottom: 1.5rem;
+    }
+    </style>
+  </template>
+
+  <script>
+  'use strict';
+
+  Polymer({
+    ready: function () {
+      this.user = this.$.globals.user();
+    },
+    userChanged: function() {
+      if(this.user) {
+        var provider = this.user.provider;
+        if(provider === 'github') {
+          this.profileUrl = "https://avatars.githubusercontent.com/u/" + this.user.github.id;
+        }
+        else if(provider === 'facebook') {
+          this.profileUrl = "http://graph.facebook.com/" + this.user.facebook.id + "/picture?width=100&height=100";
+        }
+      }
+    },
+    signalUserChanged: function () {
+      this.user = this.$.globals.user();
+    }
+  });
+  </script>
+</polymer-element>

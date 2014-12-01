@@ -1,27 +1,21 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="my-font-awesome.html">
 
-<polymer-element name="my-board-card" attributes="card date" noscript>
+<polymer-element name="my-board-card" attributes="item date">
   <template>
     <div class="card-header">
-      {{card.Title}}
+      {{item.title}}
     </div>
     <div class="card-author">
-      <!-- <span class="fa-stack fa-1x">
-        <i class="fa fa-circle fa-stack-2x"></i>
-        <i class="fa fa-user fa-stack-1x fa-inverse"></i>
-      </span> -->
-      <i class="fa fa-user"></i>
-      <span class="author-name">&nbsp; {{card.Author}}</span>
+      <my-font-awesome attr="fa-user"></my-font-awesome>
+      <span class="author-name">&nbsp; {{item.author}}</span>
     </div>
     <div class="date-created">
-      <i class="fa fa-calendar-o"></i>&nbsp; {{date}}
+      <my-font-awesome attr="fa-calendar-o"></my-font-awesome>&nbsp;
+      {{date | dateToString}}
     </div>
-    <p>{{card.Content}}</p>
-    <template repeat="{{comment in card.Comments}}">
-      <my-comment comment="{{comment}}"></my-comment>
-    </template>
+    <div>{{item.content}}</div>
 
-    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
     <style>
     :host {
       display: block;
@@ -33,13 +27,30 @@
       font-weight: 300;
     }
     .card-header {
-      margin-bottom: 10px;
+      margin-bottom: 0.5rem;
       font-size: 2rem;
     }
     .card-author, .date-created {
-      font-size: 0.8em;
-      margin-bottom: 5px;
+      font-size: 0.6em;
+    }
+    .card-author {
+      margin-bottom: 0.3rem;
+    }
+    .date-created {
+      margin-bottom: 1rem;
     }
     </style>
   </template>
+  <script>
+    'use strict';
+
+    (function() {
+      'use strict';
+      Polymer({
+        dateToString: function (date) {
+          return date.toLocaleDateString();
+        }
+      });
+    })();
+  </script>
 </polymer-element>

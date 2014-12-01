@@ -2,35 +2,23 @@
 <link rel="import" href="../../bower_components/core-signals/core-signals.html">
 <link rel="import" href="../../bower_components/firebase-element/firebase-element.html">
 <link rel="import" href="my-globals.html">
-<link rel="import" href="my-board-card.html">
-<link rel="import" href="my-comment.html">
 
-<polymer-element name="my-firebase-board" attributes="{{board}}">
+<polymer-element name="my-firebase-board" attributes="data keys">
   <template>
     <my-globals id="globals"></my-globals>
-    <firebase-element id="base" location="{{location}}" childEvents="true" ref="{{fireRef}}" data="{{data}}" keys="{{keys}}"></firebase-element>
-    <core-signals on-core-signal-changed-board="{{boardChanged}}"></core-signals>
+    <firebase-element id="base" location="{{location}}" childEvents="true" ref="{{fbRef}}" data="{{data}}" keys="{{keys}}" dataReady="{{dataReady}}"></firebase-element>
+    <core-signals on-core-signal-board-changed="{{boardChangedForFbBoard}}"></core-signals>
 
-    <template if={{!data}}>
-      <div class="center">
-        <i class="fa fa-circle-o-notch fa-spin fa-5x"></i>
-      </div>
+    <template if={{!dataReady}}>
+      <content select="[loading]"></content>
     </template>
 
-    <template repeat="{{dailyItems in data}}">
-      <template repeat="{{boardItem in dailyItems.Items}}">
-        <my-board-card card="{{boardItem}}" date="{{dailyItems.Date}}"></my-board-card>
-      </template>
+    <template if={{dataReady}}>
+      <content select="[loaded]"></content>
     </template>
 
-    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
     <style>
     :host {
-      display: block;
-    }
-    .center {
-      margin-top: 10rem;
-      text-align: center;
       display: block;
     }
     </style>
@@ -39,8 +27,9 @@
   (function () {
     'use strict';
     Polymer({
-      boardChanged: function (e, detail, sender) {
-        this.location = this.$.globals.firebaseUrl + detail;
+      boardChangedForFbBoard: function (e, detail, sender) {
+        this.board = detail;
+        this.fbRef = new Firebase(this.$.globals.firebaseUrl + this.board);
       }
     });
   })();

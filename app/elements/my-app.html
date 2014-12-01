@@ -1,27 +1,67 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/core-signals/core-signals.html">
 <link rel="import" href="my-globals.html">
 <link rel="import" href="my-layout.html">
 <link rel="import" href="my-firebase-board.html">
+<link rel="import" href="my-board-card.html">
+<link rel="import" href="my-font-awesome.html">
+<link rel="import" href="my-discussion-input.html">
 
 <polymer-element name="my-app" attributes="page">
   <template>
-    <my-globals id="globals"></my-globals>
-    <firebase-login user="{{user}}" location="{{location}}"></firebase-login>
+    <core-signals on-core-signal-board-changed="{{boardChangedForApp}}"></core-signals>
     <my-layout>
-      <my-firebase-board></my-firebase-board>
+      <my-firebase-board data="{{data}}" keys="{{keys}}">
+        <div class="center" loading>
+          <my-font-awesome attr="fa-circle-o-notch fa-spin fa-5x"></my-font-awesome>
+        </div>
+
+        <div loaded>
+          <template if="{{!data}}">
+            There's nothing to show
+          </template>
+
+          <template if="{{board == 'news'}}">
+            <template repeat="{{key in keys | sort(true)}}">
+              <my-board-card item="{{data[key]}}" date="{{key | parseDate}}"></my-board-card>
+            </template>
+          </template>
+
+          <template if="{{board == 'discussions'}}">
+            <my-discussion-input></my-discussion-input>
+            <template repeat="{{key in keys | sort(true)}}">
+            </template>
+          </template>
+        </div>
+
+        <style>
+        .center {
+          margin-top: 10rem;
+          text-align: center;
+          display: block;
+        }
+        </style>
+      </my-firebase-board>
     </my-layout>
   </template>
   <script>
   (function () {
     'use strict';
     Polymer({
-      user: null,
-      userChanged: function() {
-        this.$.globals.user(this.user);
-        console.log('user changed', this.user);
+      boardChangedForApp: function (e, detail, sender) {
+        this.board = detail;
       },
-      ready: function () {
-        this.location = this.$.globals.firebaseUrl;
+      parseDate: function (tick) {
+        return (new Date(parseInt(tick)));
+      },
+      sort: function(array, desc) {
+        return (array || []).sort(function(a, b) {
+          if (desc){
+            return ((a < b) ? 1 : ((a > b) ? -1 : 0));
+          } else {
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+          }
+        });
       }
     });
   })();
