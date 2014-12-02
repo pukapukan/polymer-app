@@ -1,0 +1,110 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/core-signals/core-signals.html">
+<link rel="import" href="my-globals.html">
+<link rel="import" href="my-font-awesome.html">
+
+<polymer-element name="my-discussion-item" attributes="item">
+  <template>
+    <core-signals on-core-signal-user-changed="{{signalUserChanged}}"></core-signals>
+    <my-globals id="globals"></my-globals>
+
+    <div id="container">
+      <div class="profile">
+        <img src="{{profileUrl}}" on-click="{{openProviderPage}}">
+      </div>
+      <div class="pull-right created">{{item.created | ticksToDateString}}</div>
+      <div class="pull-top content">
+        <div class="header" on-click="{{openProviderPage}}">
+          <span class="author">{{item.author.name}}</span>
+          <span class="weak">via</span>
+          <my-font-awesome class="provider-icon {{provider}}" attr="fa-lg fa-{{provider}}"></my-font-awesome>
+        </div>
+        <div>{{item.content}}</div>
+      </div>
+    </div>
+    <style>
+    :host {
+      display: block;
+      position: relative;
+      background-color: white;
+      padding: 20px;
+      margin-bottom: 30px;
+    }
+    #container > div {
+      display: inline-block;
+    }
+    .header {
+      margin-bottom: 5px;
+    }
+    .header:hover {
+      cursor: pointer;
+    }
+    .profile {
+      cursor: pointer;
+      margin-right: 10px;
+      position: absolute;
+      top: -5px;
+      left: -5px;
+    }
+    .profile > img {
+      height: 100px;
+      width: 100px;
+      border-radius: 25px;
+    }
+    .author {
+      font-size: 1.2rem;
+      font-weight: 500;
+      color: rgb(3, 116, 186);
+    }
+    .created {
+      font-size: 0.8rem;
+      color: grey;
+    }
+    .weak {
+      color: grey;
+      font-size: 0.7rem;
+    }
+    .content {
+      margin-left: 90px;
+    }
+    .pull-top {
+      vertical-align: top;
+    }
+    .pull-right {
+      float: right;
+    }
+    .provider-icon.facebook {
+      color: #3a5795;
+    }
+    .provider-icon.github {
+      color: black;
+    }
+  </style>
+</template>
+
+<script>
+  'use strict';
+
+  Polymer(Polymer.mixin({
+    ready: function () {
+      var providerInfo = this.item.author.uid.split(':');
+      var provider = this.provider = providerInfo[0];
+      var providerId = providerInfo[1];
+
+      if(provider === 'github') {
+        this.profileUrl = "https://avatars.githubusercontent.com/u/" + providerId
+      }
+      else if(provider === 'facebook') {
+        this.profileUrl = "http://graph.facebook.com/" + providerId + "/picture?width=100&height=100";
+      }
+    },
+    signalUserChanged: function() {
+      this.user = this.$.globals.user();
+    },
+    openProviderPage: function() {
+      var baseUrl = this.provider === 'facebook' ? 'http://www.facebook.com/' : 'http://www.github.com/';
+      window.open(baseUrl + this.item.author.username,'_blank');
+    }
+  }, window.sharedMixin));
+</script>
+</polymer-element>

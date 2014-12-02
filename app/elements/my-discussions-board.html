@@ -1,0 +1,31 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="my-firebase-board.html">
+<link rel="import" href="my-discussion-input.html">
+<link rel="import" href="my-discussion-item.html">
+
+<polymer-element name="my-discussions-board" extends="my-firebase-board">
+  <template>
+    <shadow></shadow>
+    <template if={{dataReady}}>
+      <my-discussion-input ref="{{ref}}"></my-discussion-input>
+      <template repeat="{{key in keys | sort(true)}}">
+        <my-discussion-item item="{{data[key]}}"></my-discussion-item>
+      </template>
+    </template>
+  </template>
+
+  <script>
+  (function () {
+    'use strict';
+    var board = 'discussions';
+    Polymer({
+      ready: function() {
+        this.location = this.$.globals.firebaseUrl + board;
+        this.$.base.addEventListener('error', function(error) {
+          console.log(error)
+        })
+      }
+    });
+  })();
+  </script>
+</polymer>

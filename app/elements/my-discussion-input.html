@@ -1,47 +1,57 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/core-signals/core-signals.html">
-<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input-decorator.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/core-a11y-keys/core-a11y-keys.html">
 <link rel="import" href="my-globals.html">
+<link rel="import" href="my-font-awesome.html">
 
-<polymer-element name="my-discussion-input">
+<polymer-element name="my-discussion-input" attributes="ref">
   <template>
     <core-signals on-core-signal-user-changed="{{signalUserChanged}}"></core-signals>
     <my-globals id="globals"></my-globals>
-    <template if={{!user}}>
-      <div>
-        Login is required to leave comments
-      </div>
-    </template>
-    <template if={{user}}>
-      <div horizontal layout end>
-        <div start  class="profile">
-          <img src="{{profileUrl}}">
+    <core-a11y-keys target="{{inputField}}" keys="enter" on-keys-pressed="{{submit}}"></core-a11y-keys>
+
+    <div id="container">
+      <template if={{!user}}>
+        <div id="asdf">
+          Login is required to leave comments
         </div>
-        <div flex>
-          <paper-input class="full-width font-2x" type="text"></paper-input>
+      </template>
+      <template if={{user}}>
+        <div horizontal layout center class="size-lg">
+          <!-- <div start class="profile">
+            <img src="{{profileUrl}}">
+          </div> -->
+          <div flex>
+            <template is="auto-binding">
+              <paper-input-decorator
+              label="Share your thoughts"
+              error="200자 이내로 작성해 주세요"
+              isInvalid="{{!$.inputField.validity.valid}}">
+              <input id="inputField" is="core-input" pattern=".{0,200}">
+            </paper-input-decorator>
+          </template>
+            <!-- <paper-input id="inputField" isInvalid="{{!$.input.validity.valid}}" class="full-width font-2x" type="text" label="Share your thoughts"></paper-input> -->
+          </div>
+          <div class="submit">
+            <paper-button on-click="{{submit}}">
+              <my-font-awesome attr="fa-pencil fa-lg"></my-font-awesome>&nbsp;
+              Post
+              </paper-button>
+          </div>
         </div>
-        <div class="submit">
-          <paper-button class="font-2x">Post</paper-button>
-        </div>
-      </div>
-    </template>
+      </template>
+    </div>
     <style>
-    .profile {
-      margin: 15px;
-    }
-    .profile > img {
-      height: 75px;
-      width: 75px;
-    }
     .full-width {
       width:100%;
     }
     .font-2x {
-      font-size: 2rem;
+      font-size: 1.3rem;
     }
     .submit {
-      margin-bottom: 1.5rem;
+      padding: 1.5rem 0px;
     }
     </style>
   </template>
@@ -49,23 +59,46 @@
   <script>
   'use strict';
 
+  var getDisplayName = function(user) {
+    var provider = user.provider;
+    return user[provider].displayName;
+  };
+
   Polymer({
     ready: function () {
       this.user = this.$.globals.user();
     },
-    userChanged: function() {
-      if(this.user) {
-        var provider = this.user.provider;
-        if(provider === 'github') {
-          this.profileUrl = "https://avatars.githubusercontent.com/u/" + this.user.github.id;
-        }
-        else if(provider === 'facebook') {
-          this.profileUrl = "http://graph.facebook.com/" + this.user.facebook.id + "/picture?width=100&height=100";
-        }
-      }
-    },
-    signalUserChanged: function () {
+    // userChanged: function() {
+    //   if(this.user) {
+    //     var provider = this.user.provider;
+    //     if(provider === 'github') {
+    //       this.profileUrl = "https://avatars.githubusercontent.com/u/" + this.user.github.id;
+    //     }
+    //     else if(provider === 'facebook') {
+    //       this.profileUrl = "http://graph.facebook.com/" + this.user.facebook.id + "/picture?width=100&height=100";
+    //     }
+    //   }
+    // },
+    signalUserChanged: function() {
       this.user = this.$.globals.user();
+    },
+    submit: function() {
+      var inputField = this.$.container.querySelector('#inputField');
+      var content = (inputField.value || '').trim();
+      if(content) {
+        var providerUser = this.user[this.user.provider];
+        var newItem = this.ref.push();
+        newItem.set({
+          'author': {
+            'uid': this.user.uid,
+            'name': getDisplayName(this.user),
+            'username': providerUser.username || providerUser.id
+          },
+          'created': new Date().valueOf(),
+          'content': content
+        });
+        inputField.value = '';
+      }
     }
   });
   </script>

@@ -2,23 +2,32 @@
 <link rel="import" href="../../bower_components/core-signals/core-signals.html">
 <link rel="import" href="../../bower_components/firebase-element/firebase-element.html">
 <link rel="import" href="my-globals.html">
+<link rel="import" href="my-font-awesome.html">
 
-<polymer-element name="my-firebase-board" attributes="data keys">
+<polymer-element name="my-firebase-board" attributes="ref">
   <template>
     <my-globals id="globals"></my-globals>
-    <firebase-element id="base" location="{{location}}" childEvents="true" ref="{{fbRef}}" data="{{data}}" keys="{{keys}}" dataReady="{{dataReady}}"></firebase-element>
-    <core-signals on-core-signal-board-changed="{{boardChangedForFbBoard}}"></core-signals>
+    <firebase-element id="base" location="{{location}}" childEvents="true" ref="{{ref}}" data="{{data}}" keys="{{keys}}" dataReady="{{dataReady}}"></firebase-element>
 
     <template if={{!dataReady}}>
-      <content select="[loading]"></content>
+      <div class="center">
+        <my-font-awesome attr="fa-circle-o-notch fa-spin fa-5x"></my-font-awesome>
+      </div>
     </template>
 
     <template if={{dataReady}}>
-      <content select="[loaded]"></content>
+      <template if="{{!data}}">
+        There's nothing to show
+      </template>
     </template>
 
     <style>
     :host {
+      display: block;
+    }
+    .center {
+      margin-top: 10rem;
+      text-align: center;
       display: block;
     }
     </style>
@@ -27,9 +36,14 @@
   (function () {
     'use strict';
     Polymer({
-      boardChangedForFbBoard: function (e, detail, sender) {
-        this.board = detail;
-        this.fbRef = new Firebase(this.$.globals.firebaseUrl + this.board);
+      sort: function(array, desc) {
+        return (array || []).sort(function(a, b) {
+          if (desc){
+            return ((a < b) ? 1 : ((a > b) ? -1 : 0));
+          } else {
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+          }
+        });
       }
     });
   })();

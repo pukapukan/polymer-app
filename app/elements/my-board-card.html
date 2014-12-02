@@ -1,23 +1,26 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-shadow/paper-shadow.html">
 <link rel="import" href="my-font-awesome.html">
 
-<polymer-element name="my-board-card" attributes="item date">
+<polymer-element name="my-board-card" attributes="item">
   <template>
-    <div class="card-header">
-      {{item.title}}
-    </div>
-    <div class="card-author">
-      <my-font-awesome attr="fa-user"></my-font-awesome>
-      <span class="author-name">&nbsp; {{item.author}}</span>
-    </div>
-    <div class="date-created">
-      <my-font-awesome attr="fa-calendar-o"></my-font-awesome>&nbsp;
-      {{date | dateToString}}
-    </div>
-    <div>{{item.content}}</div>
+    <paper-shadow>
+      <div class="card-header">
+        {{item.title}}
+      </div>
+      <div class="card-author">
+        <my-font-awesome attr="fa-user"></my-font-awesome>
+        <span class="author-name">&nbsp; {{item.author}}</span>
+      </div>
+      <div class="date-created">
+        <my-font-awesome attr="fa-calendar-o"></my-font-awesome>
+        &nbsp; {{item.created | ticksToDateString}}
+      </div>
+      <div id="content"></div>
+    </paper-shadow>
 
     <style>
-    :host {
+    paper-shadow {
       display: block;
       position: relative;
       background-color: white;
@@ -46,11 +49,14 @@
 
     (function() {
       'use strict';
-      Polymer({
-        dateToString: function (date) {
-          return date.toLocaleDateString();
+      Polymer(Polymer.mixin({
+        observe: {
+          'item.content': 'updateContent'
+        },
+        updateContent: function(oldValue, newValue) {
+          this.$.content.innerHTML = newValue;
         }
-      });
+      }, window.sharedMixin));
     })();
   </script>
 </polymer-element>

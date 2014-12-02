@@ -1,0 +1,24 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="my-firebase-board.html">
+<link rel="import" href="my-board-card.html">
+
+<polymer-element name="my-news-board" extends="my-firebase-board">
+  <template>
+    <shadow></shadow>
+    <template repeat="{{key in keys | sort(true)}}">
+      <my-board-card item="{{data[key]}}"></my-board-card>
+    </template>
+  </template>
+
+  <script>
+  (function () {
+    'use strict';
+    var board = 'news';
+    Polymer({
+      ready: function() {
+        this.location = this.$.globals.firebaseUrl + board;
+      }
+    });
+  })();
+  </script>
+</polymer>

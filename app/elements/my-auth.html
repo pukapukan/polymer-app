@@ -17,6 +17,7 @@
       </paper-button>
     </template>
     <template if={{user}}>
+      <img class="profile" src="{{profileUrl}}">
       <span>{{user | getUsername}}</span>
       <paper-button on-click={{logoutClicked}}>Logout</paper-button>
     </template>
@@ -36,13 +37,19 @@
     paper-button {
       background: rgb(93, 150, 186);
     }
+    .profile {
+      max-width: 50px;
+      float: left;
+      padding-top: 2px;
+      margin-right: 10px;
+      border-radius: 25px;
+    }
     </style>
   </template>
   <script>
     (function() {
       'use strict';
       Polymer({
-        stringify: JSON.stringify,
         openDialog: function(e) {
           this.$.loginDialog.open();
         },
@@ -68,6 +75,15 @@
           this.fire('core-signal', { name: 'user-changed', data: this.user });
         },
         onLogin: function() {
+          var provider = this.user.provider;
+          var providerId = this.user[provider].id;
+          if(provider === 'github') {
+            this.profileUrl = "https://avatars.githubusercontent.com/u/" + providerId
+          }
+          else if(provider === 'facebook') {
+            this.profileUrl = "http://graph.facebook.com/" + providerId + "/picture?width=100&height=100";
+          }
+
           this.$.globals.user(this.user);
           this.fire('core-signal', { name: 'user-changed', data: this.user });
         },

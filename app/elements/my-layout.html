@@ -4,10 +4,12 @@
 <link rel="import" href="../../bower_components/core-toolbar/core-toolbar.html">
 <link rel="import" href="../../bower_components/core-menu/core-menu.html">
 <link rel="import" href="../../bower_components/core-item/core-item.html">
+<link rel="import" href="../../bower_components/core-localstorage/core-localstorage.html">
 <link rel="import" href="my-auth.html">
 
 <polymer-element name="my-layout">
   <template>
+    <core-localstorage name="selected-menu-index" value="{{selected}}"></core-localstorage>
     <core-scaffold>
       <core-header-panel navigation flex>
         <core-toolbar id="navheader">
@@ -52,16 +54,18 @@
   <script>
   (function () {
     'use strict';
-    var menu = [ 'Discussions', 'News' ];
+    var menu = [ 'News', 'Discussions' ];
     Polymer({
       menu: menu,
       selected: -1,
       selectedChanged: function(oldValue, newValue) {
+        this.stored = newValue;
         this.board = menu[newValue];
         this.fire('core-signal', { name: 'board-changed', data: this.board.toLowerCase() });
       },
       ready: function () {
-        this.selected = 0;
+        console.log('stored index', this.stored)
+        this.selected = this.stored || 0;
       }
     });
   })();
