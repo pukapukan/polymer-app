@@ -19,7 +19,7 @@
           <span class="weak">via</span>
           <my-font-awesome class="provider-icon {{provider}}" attr="fa-lg fa-{{provider}}"></my-font-awesome>
         </div>
-        <div>{{item.content}}</div>
+        <div class="text">{{item.content}}</div>
       </div>
     </div>
     <style>
@@ -34,7 +34,7 @@
       display: inline-block;
     }
     .header {
-      margin-bottom: 5px;
+      margin: 10px 0px 15px 0px;
     }
     .header:hover {
       cursor: pointer;
@@ -43,13 +43,13 @@
       cursor: pointer;
       margin-right: 10px;
       position: absolute;
-      top: -5px;
-      left: -5px;
+      top: 10px;
+      left: 10px;
     }
     .profile > img {
       height: 100px;
       width: 100px;
-      border-radius: 25px;
+      border-radius: 50px;
     }
     .author {
       font-size: 1.2rem;
@@ -58,6 +58,7 @@
     }
     .created {
       font-size: 0.8rem;
+      margin-top: 15px;
       color: grey;
     }
     .weak {
@@ -65,7 +66,10 @@
       font-size: 0.7rem;
     }
     .content {
-      margin-left: 90px;
+      margin-left: 100px;
+    }
+    .text {
+      margin-bottom:10px;
     }
     .pull-top {
       vertical-align: top;
