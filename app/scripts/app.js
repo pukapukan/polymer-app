@@ -5,10 +5,6 @@
     ticksToDateString: function (ticks) {
       var date = new Date(parseInt(ticks));
       return date.toLocaleDateString();
-    },
-    ticksToDateTimeString: function (ticks) {
-      var date = new Date(parseInt(ticks));
-      return date.toLocaleString();
     }
   };
 

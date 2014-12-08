@@ -11,25 +11,21 @@
 
 <polymer-element name="my-app">
   <template>
-    <core-signals on-core-signal-board-changed="{{coreBoardChangedForApp}}" on-core-signal-board-data-changed="{{coreDataChanged}}"></core-signals>
-    <my-layout>
-
-      <template if="{{board == 'news'}}">
+    <my-layout on-board-changed={{onBoardChanged}}>
+      <template if="{{board == 'News'}}">
         <my-news-board></my-news-board>
       </template>
-
-      <template if="{{board == 'discussions'}}">
+      <template if="{{board == 'Discussions'}}">
         <my-discussions-board></my-discussions-board>
       </template>
-
     </my-layout>
   </template>
   <script>
   (function () {
     'use strict';
     Polymer({
-      coreBoardChangedForApp: function (event, detail, sender) {
-        this.board = detail;
+      onBoardChanged: function (event, detail, sender) {
+        this.board = detail.board;
       }
     });
   })();

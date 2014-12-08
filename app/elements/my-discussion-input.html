@@ -20,9 +20,6 @@
       </template>
       <template if={{user}}>
         <div horizontal layout center class="size-lg">
-          <!-- <div start class="profile">
-            <img src="{{profileUrl}}">
-          </div> -->
           <div flex>
             <template is="auto-binding">
               <paper-input-decorator
@@ -32,7 +29,6 @@
               <input id="inputField" is="core-input" pattern=".{0,200}">
             </paper-input-decorator>
           </template>
-            <!-- <paper-input id="inputField" isInvalid="{{!$.input.validity.valid}}" class="full-width font-2x" type="text" label="Share your thoughts"></paper-input> -->
           </div>
           <div class="submit">
             <paper-button on-click="{{submit}}">
@@ -74,19 +70,8 @@
     ready: function () {
       this.user = this.$.globals.user();
     },
-    // userChanged: function() {
-    //   if(this.user) {
-    //     var provider = this.user.provider;
-    //     if(provider === 'github') {
-    //       this.profileUrl = "https://avatars.githubusercontent.com/u/" + this.user.github.id;
-    //     }
-    //     else if(provider === 'facebook') {
-    //       this.profileUrl = "http://graph.facebook.com/" + this.user.facebook.id + "/picture?width=100&height=100";
-    //     }
-    //   }
-    // },
     signalUserChanged: function() {
-      this.user = this.$.globals.user();
+      this.user = this.$.globals.user();;
     },
     submit: function() {
       var inputField = this.$.container.querySelector('#inputField');

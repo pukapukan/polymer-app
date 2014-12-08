@@ -1,5 +1,4 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../bower_components/core-signals/core-signals.html">
 <link rel="import" href="../../bower_components/core-scaffold/core-scaffold.html">
 <link rel="import" href="../../bower_components/core-toolbar/core-toolbar.html">
 <link rel="import" href="../../bower_components/core-menu/core-menu.html">
@@ -9,7 +8,7 @@
 
 <polymer-element name="my-layout">
   <template>
-    <core-localstorage name="selected-menu-index" value="{{selected}}"></core-localstorage>
+    <core-localstorage name="selected-menu-index" value="{{selected}}" on-core-localstorage-load="{{onStorageLoad}}"></core-localstorage>
     <core-scaffold>
       <core-header-panel navigation flex>
         <core-toolbar id="navheader">
@@ -59,13 +58,11 @@
       menu: menu,
       selected: -1,
       selectedChanged: function(oldValue, newValue) {
-        this.stored = newValue;
         this.board = menu[newValue];
-        this.fire('core-signal', { name: 'board-changed', data: this.board.toLowerCase() });
+        this.fire('board-changed', { board: this.board });
       },
-      ready: function () {
-        console.log('stored index', this.stored)
-        this.selected = this.stored || 0;
+      onStorageLoad: function () {
+        this.selected = this.selected === -1 ? 0 : this.selected;
       }
     });
   })();
